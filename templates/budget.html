@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Budget Management</h2>
+
+<h3>Set Budget</h3>
+<form method="POST">
+    Month (YYYY-MM): <input type="month" name="month" value="{{ current_month }}" required><br><br>
+    Monthly Limit (Rs.): <input type="number" name="monthly_limit" step="0.01" min="0" required><br><br>
+    <input type="submit" value="Set Budget">
+</form>
+
+<br>
+<h3>Budget History</h3>
+{% if budgets %}
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Month</th>
+        <th>Budget (Rs.)</th>
+        <th>Spent (Rs.)</th>
+        <th>Remaining (Rs.)</th>
+        <th>Status</th>
+    </tr>
+    {% for b in budgets %}
+    {% set spent = b.spent or 0 %}
+    {% set remaining = b.monthly_limit - spent %}
+    <tr>
+        <td>{{ b.month }}</td>
+        <td>{{ "%.2f"|format(b.monthly_limit) }}</td>
+        <td>{{ "%.2f"|format(spent) }}</td>
+        <td>{{ "%.2f"|format(remaining) }}</td>
+        <td>
+            {% if spent > b.monthly_limit %}
+            <b>EXCEEDED</b>
+            {% else %}
+            OK
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No budgets set yet.</p>
+{% endif %}
+{% endblock %}

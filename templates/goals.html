@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Financial Goals</h2>
+<a href="/goals/add">+ Add New Goal</a>
+<br><br>
+{% if goals %}
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Description</th>
+        <th>Type</th>
+        <th>Target (Rs.)</th>
+        <th>Saved (Rs.)</th>
+        <th>Progress</th>
+        <th>Deadline</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+    {% for g in goals %}
+    {% set progress = ((g.saved_amount / g.target_amount) * 100) if g.target_amount > 0 else 0 %}
+    <tr>
+        <td>{{ g.description }}</td>
+        <td>{{ g.goal_type }}</td>
+        <td>{{ "%.2f"|format(g.target_amount) }}</td>
+        <td>{{ "%.2f"|format(g.saved_amount) }}</td>
+        <td>{{ "%.1f"|format(progress) }}%</td>
+        <td>{{ g.deadline }}</td>
+        <td>{% if g.saved_amount >= g.target_amount %}<b>COMPLETED</b>{% else %}In Progress{% endif %}</td>
+        <td>
+            <a href="/goals/update/{{ g.goal_id }}">Update Progress</a> |
+            <a href="/goals/delete/{{ g.goal_id }}" onclick="return confirm('Delete this goal?')">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No goals set yet. <a href="/goals/add">Add one now.</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Update Goal Progress</h2>
+<p><b>Goal:</b> {{ goal.description }}</p>
+<p><b>Target:</b> Rs. {{ "%.2f"|format(goal.target_amount) }}</p>
+<p><b>Current Saved:</b> Rs. {{ "%.2f"|format(goal.saved_amount) }}</p>
+<form method="POST">
+    New Saved Amount (Rs.): <input type="number" name="saved_amount" step="0.01" min="0" value="{{ goal.saved_amount }}" required><br><br>
+    <input type="submit" value="Update">
+    <a href="/goals">Cancel</a>
+</form>
+{% endblock %}

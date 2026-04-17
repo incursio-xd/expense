@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Expense</h2>
+<form method="POST">
+    Amount (Rs.): <input type="number" name="amount" step="0.01" min="0" value="{{ expense.amount }}" required><br><br>
+    Category:
+    <select name="category" required>
+        <option value="">-- Select --</option>
+        {% for cat in ['Food','Housing','Transportation','Healthcare','Education','Entertainment','Shopping','Other'] %}
+        <option value="{{ cat }}" {% if expense.category == cat %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+    </select><br><br>
+    Description: <input type="text" name="description" value="{{ expense.description }}"><br><br>
+    Date: <input type="date" name="date" value="{{ expense.date }}" required><br><br>
+    <input type="submit" value="Update Expense">
+    <a href="/expenses">Cancel</a>
+</form>
+{% endblock %}

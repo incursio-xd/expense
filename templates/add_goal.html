@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Add Financial Goal</h2>
+<form method="POST">
+    Description: <input type="text" name="description" required><br><br>
+    Goal Type:
+    <select name="goal_type" required>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Yearly">Yearly</option>
+    </select><br><br>
+    Target Amount (Rs.): <input type="number" name="target_amount" step="0.01" min="0" required><br><br>
+    Already Saved (Rs.): <input type="number" name="saved_amount" step="0.01" min="0" value="0"><br><br>
+    Deadline: <input type="date" name="deadline" required><br><br>
+    <input type="submit" value="Add Goal">
+    <a href="/goals">Cancel</a>
+</form>
+{% endblock %}

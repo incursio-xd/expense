@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Reports</h2>
+
+<style>
+    #dailyChart, #monthlyChart, #compChart {
+        max-width: 100%;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 300px;
+    }
+</style>
+
+<h3>Daily Report - {{ today }}</h3>
+<p>Total Spent Today: <b>Rs. {{ "%.2f"|format(daily_total) }}</b></p>
+<canvas id="dailyChart"></canvas>
+
+<br><br>
+<h3>Monthly Report - {{ current_month }}</h3>
+<p>Total Spent This Month: <b>Rs. {{ "%.2f"|format(monthly_total) }}</b></p>
+<canvas id="monthlyChart"></canvas>
+
+<br><br>
+<h3>Monthly Comparison (Last 6 Months)</h3>
+<canvas id="compChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var dailyLabels = {{ daily_labels|safe }};
+    var dailyValues = {{ daily_values|safe }};
+    var monthlyLabels = {{ monthly_labels|safe }};
+    var monthlyValues = {{ monthly_values|safe }};
+    var compLabels = {{ comp_labels|safe }};
+    var compValues = {{ comp_values|safe }};
+
+    if (dailyLabels.length > 0) {
+        new Chart(document.getElementById('dailyChart'), {
+            type: 'bar',
+            data: { labels: dailyLabels, datasets: [{ label: "Today's Spending by Category", data: dailyValues }] }
+        });
+    } else {
+        document.getElementById('dailyChart').insertAdjacentHTML('afterend', '<p>No expenses today.</p>');
+    }
+
+    if (monthlyLabels.length > 0) {
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'pie',
+            data: { labels: monthlyLabels, datasets: [{ data: monthlyValues }] },
+            options: { plugins: { title: { display: true, text: 'Monthly Category Breakdown' } } }
+        });
+    } else {
+        document.getElementById('monthlyChart').insertAdjacentHTML('afterend', '<p>No expenses this month.</p>');
+    }
+
+    if (compLabels.length > 0) {
+        new Chart(document.getElementById('compChart'), {
+            type: 'bar',
+            data: { labels: compLabels, datasets: [{ label: 'Monthly Total Spending', data: compValues }] },
+            options: { plugins: { title: { display: true, text: 'Month-wise Comparison' } } }
+        });
+    } else {
+        document.getElementById('compChart').insertAdjacentHTML('afterend', '<p>Not enough data for comparison.</p>');
+    }
+</script>
+{% endblock %}

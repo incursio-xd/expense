@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>All Expenses</h2>
+<a href="/expenses/add">+ Add New Expense</a>
+<br><br>
+{% if expenses %}
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Date</th>
+        <th>Category</th>
+        <th>Amount (Rs.)</th>
+        <th>Description</th>
+        <th>Actions</th>
+    </tr>
+    {% for e in expenses %}
+    <tr>
+        <td>{{ e.date }}</td>
+        <td>{{ e.category }}</td>
+        <td>{{ "%.2f"|format(e.amount) }}</td>
+        <td>{{ e.description }}</td>
+        <td>
+            <a href="/expenses/edit/{{ e.expense_id }}">Edit</a> |
+            <a href="/expenses/delete/{{ e.expense_id }}" onclick="return confirm('Delete this expense?')">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No expenses found. <a href="/expenses/add">Add one now.</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard - {{ current_month }}</h2>
+
+{% if budget_exceeded %}
+<p><b>WARNING: You have exceeded your monthly budget!</b></p>
+{% endif %}
+
+<table border="1" cellpadding="5">
+    <tr>
+        <th>Today's Expenses</th>
+        <th>Monthly Expenses</th>
+        <th>Monthly Budget</th>
+        <th>Remaining Budget</th>
+    </tr>
+    <tr>
+        <td>Rs. {{ "%.2f"|format(today_expenses) }}</td>
+        <td>Rs. {{ "%.2f"|format(monthly_expenses) }}</td>
+        <td>Rs. {{ "%.2f"|format(monthly_limit) }}</td>
+        <td>Rs. {{ "%.2f"|format(remaining) }}</td>
+    </tr>
+</table>
+
+<br>
+<h3>Recent Expenses</h3>
+{% if recent %}
+<table border="1" cellpadding="5">
+    <tr><th>Date</th><th>Category</th><th>Amount</th><th>Description</th></tr>
+    {% for e in recent %}
+    <tr>
+        <td>{{ e.date }}</td>
+        <td>{{ e.category }}</td>
+        <td>Rs. {{ "%.2f"|format(e.amount) }}</td>
+        <td>{{ e.description }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>No expenses recorded yet.</p>
+{% endif %}
+
+<br>
+<style>
+    #catChart, #trendChart {
+        max-width: 100%;
+        width: 100% !important;
+        height: auto !important;
+        max-height: 300px;
+    }
+</style>
+
+<h3>Expense Breakdown by Category (This Month)</h3>
+<canvas id="catChart"></canvas>
+
+<br><br>
+<h3>Monthly Expense Trend</h3>
+<canvas id="trendChart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var catLabels = {{ cat_labels|safe }};
+    var catValues = {{ cat_values|safe }};
+    var trendLabels = {{ trend_labels|safe }};
+    var trendValues = {{ trend_values|safe }};
+
+    if (catLabels.length > 0) {
+        new Chart(document.getElementById('catChart'), {
+            type: 'pie',
+            data: {
+                labels: catLabels,
+                datasets: [{ data: catValues }]
+            },
+            options: { plugins: { title: { display: true, text: 'Category Breakdown' } } }
+        });
+    } else {
+        document.getElementById('catChart').insertAdjacentHTML('afterend', '<p>No data for chart.</p>');
+    }
+
+    if (trendLabels.length > 0) {
+        new Chart(document.getElementById('trendChart'), {
+            type: 'bar',
+            data: {
+                labels: trendLabels,
+                datasets: [{ label: 'Monthly Spending', data: trendValues }]
+            },
+            options: { plugins: { title: { display: true, text: 'Monthly Trend' } } }
+        });
+    } else {
+        document.getElementById('trendChart').insertAdjacentHTML('afterend', '<p>No data for chart.</p>');
+    }
+</script>
+
+<br>
+<a href="/expenses/add">+ Add New Expense</a>
+{% endblock %}

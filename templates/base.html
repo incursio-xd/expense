@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Tracker</title>
+</head>
+<body>
+{% if session.user_id %}
+<hr>
+<b>Smart Expense Tracker</b> | Welcome, {{ session.user_name }} |
+<a href="/dashboard">Dashboard</a> |
+<a href="/expenses">Expenses</a> |
+<a href="/budget">Budget</a> |
+<a href="/goals">Goals</a> |
+<a href="/reports">Reports</a> |
+<a href="/logout">Logout</a>
+<hr>
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <p><b>{{ msg }}</b></p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+</body>
+</html>
